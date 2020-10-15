@@ -3,16 +3,15 @@ from flask import Flask
 from flask import render_template
 from flask import request
 
-import torch
-
+import fastai
 from fastai.vision.all import *
 from fastai.vision.widgets import *
 
+fastai.layers.CrossEntropyLossFlat = fastai.losses.CrossEntropyLossFlat
 
 app = Flask(__name__)
 
-UPLOAD_FOLDER = "D:\\School\\M2\\AI\\API_Moles\\static"
-
+learner = load_learner('./export.pkl', cpu=True)
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -20,12 +19,10 @@ def upload_predict():
     if request.method == "POST":
         image_file = request.files["image"]
         if image_file:
-            image_location = os.path.join(
-                UPLOAD_FOLDER,
-                image_file.filename
-            )
-            image_file.save(image_location)
-            return render_template("index.html", prediction=1)
+            img = PILImage.create(image_file)
+
+            pred, _, _ = learner.predict(img)
+            return render_template("index.html", prediction=1, pred=pred)
 
     return render_template("index.html", prediction=0)
 
