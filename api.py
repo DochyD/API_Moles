@@ -1,4 +1,6 @@
 import os
+import sys
+
 from flask import Flask
 from flask import render_template
 from flask import request
@@ -9,13 +11,21 @@ from fastai.vision.all import *
 from fastai.vision.widgets import *
 
 
-app = Flask(__name__)
+# app = Flask(__name__)
+
+
 
 UPLOAD_FOLDER = "D:\\School\\M2\\AI\\API_Moles\\static"
 
+path = Path()
 
+# print(os.listdir(path))
 
-@app.route('/', methods=['GET', 'POST'])
+learn_inf = load_learner(os.path.join(path, 'export.pkl') , cpu=True)
+
+# model = pickle.load(open(os.path.join(path, 'export.pkl'), 'rb'))
+
+# @app.route('/', methods=['GET', 'POST'])
 def upload_predict():
     if request.method == "POST":
         image_file = request.files["image"]
@@ -31,4 +41,5 @@ def upload_predict():
 
 
 if __name__ == "__main__":
-    app.run(port=12000, debug=True)
+    # app.run(port=12000, debug=True)
+    print("fin")
